@@ -1,0 +1,5 @@
+2023-09-07 23:31:11,163 [Worker-6: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2023-09-07 23:31:27,556 [Worker-9: Updating Maven Dependencies] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.swamy.learning:User-Service:0.0.1-SNAPSHOT @ C:\Users\SWAMY\OneDrive\Desktop\No_Name_Project\MyProjects\User-Service\pom.xml.
+2023-09-07 23:31:34,073 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2023-09-07 23:31:34,116 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2023-09-07 23:31:34,126 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\SWAMY\OneDrive\Desktop\No_Name_Project\MyProjects\User-Service\src\test\resources
