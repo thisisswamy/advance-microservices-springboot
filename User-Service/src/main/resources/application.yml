@@ -14,5 +14,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com          # SMTP server host
+    port: 587                     # SMTP server port
+    username: creatorbhargav000@gmail.com  # Your Gmail email address
+    password: uzmmzxjsvlyfkgsw        # Your Gmail password or app-specific password
+    properties:
+      mail:
+        smtp:
+          auth: true               # Enable SMTP authentication
+          starttls:
+            enable: true           # Enable STARTTLS encryption
+          
       
 #debug: true

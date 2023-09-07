@@ -1,18 +1,19 @@
 package com.swamy.learning.userservice.services;
 
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import com.swamy.learning.userservice.dtos.ResetPasswordReq;
 import com.swamy.learning.userservice.entities.ApplicationUser;
 import com.swamy.learning.userservice.entities.Roles;
 import com.swamy.learning.userservice.entities.UserVerification;
+import com.swamy.learning.userservice.events.RegistrationCompleteEvent;
 import com.swamy.learning.userservice.exceptions.GenericException;
 import com.swamy.learning.userservice.repos.ApplicationUserRepo;
 import com.swamy.learning.userservice.repos.UserVerificationRepo;
@@ -33,6 +35,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public class UserServiceImpl implements UserService {
 	
 	private final static long EXPIRY_DURATION_IN_MIN =5;
+
+	private static String generateVerificationLink;
 	
 	@Autowired
 	private ApplicationUserRepo applicationUserRepo;
@@ -46,6 +50,15 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserVerificationRepo userVerificationRepo;
 
+	@Autowired
+	private ApplicationEventPublisher publisher;
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+
+	
+
 	@Override
 	public ResponseEntity<Object> register(ApplicationUserRequest request,HttpServletRequest req){
 	
@@ -53,21 +66,42 @@ public class UserServiceImpl implements UserService {
 			throw new GenericException("All fields are mandatory !Please fill all the feilds",HttpStatus.BAD_REQUEST);
 		}
 		ApplicationUser findByEmail = applicationUserRepo.findByEmail(request.getEmail());
-		if(findByEmail != null) {
+		Optional<ApplicationUser> optionalUser  = applicationUserRepo.findByUserName(request.getUserName());
+
+		if(findByEmail != null || optionalUser.isPresent()) {
 			throw new GenericException("User already existed ! please login",HttpStatus.BAD_REQUEST);
 		}
 		//Create an empty object
 		ApplicationUser user = setApplicationUserProperties(request);		
 		applicationUserRepo.save(user);
+
+		
+
+
 		//Return UserResponse;
 		ApplicationUserResponse applicationUserResponse = utilities.toApplicationUserResponse(user);
 		String applicationBasePath = utilities.getApplicationBasePath(req);
-		String generateVerificationLink = applicationBasePath + generateVerificationLink(request.getUserName());
+		generateVerificationLink = applicationBasePath + generateVerificationLink(request.getUserName());
 		
+		//publishing an email event
+		publisher.publishEvent(new RegistrationCompleteEvent(request));
 		//returning activation Link
-		return ResponseEntity.ok(generateVerificationLink);
+		// return ResponseEntity.ok(generateVerificationLink);
+		return ResponseEntity.ok("Verification link sent to an email please complete verification..");
 	}
+
+	//E-mail Listner
+	@EventListener(RegistrationCompleteEvent.class)
+	public void triggerVerificationEmail(RegistrationCompleteEvent event){
+		ApplicationUserRequest user = (ApplicationUserRequest) event.getSource();
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setFrom(DataConstants.fromEmail);
+		mailMessage.setTo(user.getEmail());
+		mailMessage.setSubject("Activation link");
+		mailMessage.setText("Dear "+ user.getFirstName() +"\n\n\nComplete your registration through Following link : "+ generateVerificationLink + "\n\n"+DataConstants.salutationNote);
+		mailSender.send(mailMessage);
 	
+	}
 	boolean isAllUserFieldsFilled(ApplicationUserRequest request){
 		if(request.getFirstName() == null || request.getFirstName().equals("") ||
 				request.getLastName() == null || request.getLastName().equals("") || 
