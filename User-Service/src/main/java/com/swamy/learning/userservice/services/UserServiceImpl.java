@@ -115,8 +115,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResponseEntity<Object> verifyUserReg(String token) {
-		
-		Optional<UserVerification> userToken = userVerificationRepo.getByToken(token);		
+		Optional<UserVerification> userToken=null;
+	
+		try {
+			userToken = userVerificationRepo.getByToken(token);
+		}catch(RuntimeException e) {
+			throw new GenericException("Invalid Registration Link/No user registered !!",HttpStatus.BAD_REQUEST);
+		}
 		if(userToken.isPresent()){
 			long tokenExpiryTime = utilities.getTokenExpiryTime(userToken.get());
 			if(tokenExpiryTime> EXPIRY_DURATION_IN_MIN) {
