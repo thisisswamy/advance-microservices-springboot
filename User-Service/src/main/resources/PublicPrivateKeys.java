@@ -8,7 +8,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-public class JwtExample {
+public class PublicPrivateKeys {
+
+
+    PublicPrivateKeys(){
+        super();
+    }
     public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.ES512);
         String encodedPublicKeyBase64 = Encoders.BASE64.encode(keyPair.getPublic().getEncoded());
