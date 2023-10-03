@@ -2,6 +2,7 @@ package com.swamy.learning.authservice.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +19,12 @@ public class AuthController {
 	@PostMapping("/token")
 	public ResponseEntity<Object> generateToken(@RequestBody AuthenticationReq authenticationReq){
 		return authenticationService.generateToken(authenticationReq);
-
-		
+	
+	}
+	
+	@GetMapping("/validateToken")
+	public ResponseEntity<Object> validateTheToken(){
+		return authenticationService.validateToken();
 	}
 
 }

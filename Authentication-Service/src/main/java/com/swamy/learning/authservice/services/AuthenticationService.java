@@ -10,4 +10,6 @@ public interface AuthenticationService {
 
 	ResponseEntity<Object> generateToken(AuthenticationReq authenticationReq);
 
+	ResponseEntity<Object> validateToken();
+
 }

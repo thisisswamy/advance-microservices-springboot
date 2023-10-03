@@ -57,5 +57,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			return ResponseEntity.ok(map);
 
 	}
+	@Override
+	public ResponseEntity<Object> validateToken() {
+		return ResponseEntity.ok("Valid Token");
+	}
 
 }

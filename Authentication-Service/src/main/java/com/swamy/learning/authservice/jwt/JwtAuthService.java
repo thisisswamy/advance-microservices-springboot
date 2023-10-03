@@ -53,9 +53,9 @@ public class JwtAuthService {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, ApplicationUser userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getEmail()) && !isTokenExpired(token));
     }
 
 
@@ -84,8 +84,8 @@ public class JwtAuthService {
 		Map<String, Object> claims = new HashMap<>();
 		List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 		claims.put("roles", roles);
-		claims.put("email", userDetails.getEmail());
-		return createTokenWithRoles(claims, userDetails.getUsername());
+		claims.put("userName", userDetails.getUsername());
+		return createTokenWithRoles(claims, userDetails.getEmail());
 	}
 
     private Key getSignKey() {
