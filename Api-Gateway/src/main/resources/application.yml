@@ -1,0 +1,10 @@
+server:
+  port: 1010
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway-service
+eureka:
+  client:
+    fetch-registry: true

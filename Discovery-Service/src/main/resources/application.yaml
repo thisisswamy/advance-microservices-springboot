@@ -1,0 +1,22 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: discovery-service
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+#  server:
+#    expected-client-renewal-interval-seconds: 3
+#    renewal-percent-threshold: 0.85 
+#    renewal-threshold-update-interval-ms: 900000
+#    eviction-interval-timer-in-ms: 60000
+#    
+#  instance:
+#    lease-expiration-duration-in-seconds: 90
+  
+#eureka.instance.lease-expiration-duration-in-seconds=90
+#eureka.server.eviction-interval-timer-in-ms=60000
+#eureka.server.renewal-percent-threshold=0.85
+#eureka.server.renewal-threshold-update-interval-ms=900000
